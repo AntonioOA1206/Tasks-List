@@ -22,6 +22,7 @@ function fhelp (
 		fcolores 33 "-a Añadir una nueva tarea"
 		fcolores 33 "-d x Eliminar una tarea (donde x es el ID de la tarea)"
 		fcolores 33 "-e x Cambiar el estado de una tarea (donde x es el ID de la tarea)"
+		fcolores 33 "-p x Cambiar la prioridad de una tarea (donde x es el ID de la tarea)"
 		fcolores 33 "-h Desplegar este menu de ayuda"
 		fcolores 94 -------------------------------
 		echo "Pulsa la tecla q para salir"
@@ -194,3 +195,54 @@ function festado() {
 	fi
 }
 
+function fprio() {
+
+	if [[ $1 =~ [0-9] ]];then
+
+		fleer
+
+		if [ $1 -lt 1 ] || [ $1 -ge $i ];then
+			fcolores 31 ID INVALIDO
+		else
+
+			while true;do
+				read -p "Introduce la nueva prioridad prioridad (B/m/a): " prio
+				case $prio in
+					""|b|B)
+						prio="Baja"
+						break
+					;;
+					m)
+						prio="Media"
+						break
+					;;
+					a)
+						prio="Alta"
+						break
+					;;
+					*)
+						fcolores 31 OPCION NO VALIDA
+						fcolores 33 "Recuerda que las opciones son b (Baja), m (media) o a (alta)"
+					;;
+				esac
+			done
+
+			: > $db
+
+			j=1
+
+			while [ $j -lt $i ];do
+				if [ ${tareas[$j,id]} -eq $1 ];then
+					if [ "${tareas[$j,prioridad]}" != "$prio" ];then
+						echo "${tareas[$j,id]}:${tareas[$j,tarea]}:${tareas[$j,estado]}:$prio" >> $db
+					fi
+				else
+						echo "${tareas[$j,id]}:${tareas[$j,tarea]}:${tareas[$j,estado]}:${tareas[$j,prioridad]}" >> $db
+				fi
+				j=$(($j+1))
+			done
+		fi
+	else
+		fcolores 31 ID INVALIDO
+	fi
+}
