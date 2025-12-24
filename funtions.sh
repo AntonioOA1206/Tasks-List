@@ -21,6 +21,7 @@ function fhelp (
 		fcolores 33 "-l Ver todas las tareas"
 		fcolores 33 "-a Añadir una nueva tarea"
 		fcolores 33 "-d x Eliminar una tarea (donde x es el ID de la tarea)"
+		fcolores 33 "-e x Cambiar el estado de una tarea (donde x es el ID de la tarea)"
 		fcolores 33 "-h Desplegar este menu de ayuda"
 		fcolores 94 -------------------------------
 		echo "Pulsa la tecla q para salir"
@@ -160,6 +161,36 @@ function fdel() {
 	fi
 }
 
-#function festado() {
-	
-#}
+function festado() {
+
+	if [[ $1 =~ [0-9] ]];then
+
+		fleer
+
+		if [ $1 -lt 1 ] || [ $1 -ge $i ];then
+			fcolores 31 ID INVALIDO
+		else
+			: > $db
+
+			j=1
+
+			while [ $j -lt $i ];do
+				if [ ${tareas[$j,id]} -eq $1 ];then
+					if [ "${tareas[$j,estado]}" = "Por hacer" ];then
+						echo "${tareas[$j,id]}:${tareas[$j,tarea]}:Terminada:${tareas[$j,prioridad]}" >> $db
+					elif [ "${tareas[$j,estado]}" = "Terminada" ];then
+						echo "${tareas[$j,id]}:${tareas[$j,tarea]}:Por hacer:${tareas[$j,prioridad]}" >> $db
+					else
+						fcolores 31 ERROR EN LA BASE DE DATOS
+					fi
+				else
+						echo "${tareas[$j,id]}:${tareas[$j,tarea]}:${tareas[$j,estado]}:${tareas[$j,prioridad]}" >> $db
+				fi
+				j=$(($j+1))
+			done
+		fi
+	else
+		fcolores 31 ID INVALIDO
+	fi
+}
+

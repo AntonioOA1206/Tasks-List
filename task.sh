@@ -13,7 +13,7 @@ fi
 
 declare -A tareas
 
-while getopts "lahd:" opt;do
+while getopts "lahd:e:" opt;do
 	case $opt in
 		l)
 			fver
@@ -23,6 +23,9 @@ while getopts "lahd:" opt;do
 		;;
 		d)
 			fdel $OPTARG
+		;;
+		e)
+			festado $OPTARG
 		;;
 		h)
 			fhelp
