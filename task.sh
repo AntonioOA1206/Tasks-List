@@ -13,10 +13,15 @@ fi
 
 declare -A tareas
 
-while getopts "lahd:e:p:" opt;do
+ver=0
+
+while getopts "lahd:e:p:f:" opt;do
 	case $opt in
+		f)
+			filt=$OPTARG
+		;;
 		l)
-			fver
+			ver=1
 		;;
 		a)
 			fadd
@@ -39,3 +44,17 @@ while getopts "lahd:e:p:" opt;do
 		;;
 	esac
 done
+
+if [ -z $filt ] && [ $ver -eq 1 ];then
+	fver
+elif [ "$filt" = "et"  ] && [ $ver -eq 1 ];then
+	fver "e" "t"
+elif [ "$filt" = "en"  ] && [ $ver -eq 1 ];then
+	fver "e" "n"
+elif [ "$filt" = "pb"  ] && [ $ver -eq 1 ];then
+	fver "p" "b"
+elif [ "$filt" = "pm"  ] && [ $ver -eq 1 ];then
+	fver "p" "m"
+elif [ "$filt" = "pa"  ] && [ $ver -eq 1 ];then
+	fver "p" "a"
+fi

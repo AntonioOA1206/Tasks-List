@@ -19,6 +19,8 @@ function fhelp (
 		echo "OPCIONES DISPONIBLES:"
 		fcolores 94 -------------------------------
 		fcolores 33 "-l Ver todas las tareas"
+		fcolores 32 "-f yz Para filtrar. Se usa junto a la opcion -l donde y es si quieres filtrar por estado (e) o prioridad (p) y "
+		fcolores 32 "z es para elegir el estado ( Terminada con t y Por hacer con n) o la prioridad ( Alta con a, Media con m y Baja con b)"
 		fcolores 33 "-a Añadir una nueva tarea"
 		fcolores 33 "-d x Eliminar una tarea (donde x es el ID de la tarea)"
 		fcolores 33 "-e x Cambiar el estado de una tarea (donde x es el ID de la tarea)"
@@ -47,34 +49,201 @@ function fver() {
 	echo "ID | Tarea | Estado | Prioridad |"
 	echo "---------------------------------"
 
-	j=1
+	if [ $# -eq 0 ];then
 
-	while [ $j -ne $i ];do
-		echo -n -e "\e[33m[${tareas[$j,id]}]\e[0m |"
-		echo -n " ${tareas[$j,tarea]} |"
+		j=1
 
-		if [ "${tareas[$j,estado]}" == "Terminada" ];then
-			echo -n -e "\e[32m ${tareas[$j,estado]}\e[0m |"
-		elif [ "${tareas[$j,estado]}" == "Por hacer" ];then
-			echo -n -e "\e[33m ${tareas[$j,estado]}\e[0m |"
-		else
-			fcolores 31 ERROR EN LA BASE DE DATOS
-		fi
+		while [ $j -ne $i ];do
+			echo -n -e "\e[33m[${tareas[$j,id]}]\e[0m |"
+			echo -n " ${tareas[$j,tarea]} |"
 
-		if [ "${tareas[$j,prioridad]}" == "Alta" ];then
-			echo -n -e "\e[31m ${tareas[$j,prioridad]}\e[0m |"
-		elif [ "${tareas[$j,prioridad]}" == "Media" ];then
-			echo -n -e "\e[33m ${tareas[$j,prioridad]}\e[0m |"
-		elif [ "${tareas[$j,prioridad]}" == "Baja" ];then
-			echo -n -e "\e[94m ${tareas[$j,prioridad]}\e[0m |"
-		else
-			fcolores 31 ERROR EN LA BASE DE DATOS
-		fi
+			if [ "${tareas[$j,estado]}" == "Terminada" ];then
+				echo -n -e "\e[32m ${tareas[$j,estado]}\e[0m |"
+			elif [ "${tareas[$j,estado]}" == "Por hacer" ];then
+				echo -n -e "\e[33m ${tareas[$j,estado]}\e[0m |"
+			else
+				fcolores 31 ERROR EN LA BASE DE DATOS
+			fi
 
-		echo ""
-		j=$(($j+1))
-	done
-	echo "---------------------------------"
+			if [ "${tareas[$j,prioridad]}" == "Alta" ];then
+				echo -n -e "\e[31m ${tareas[$j,prioridad]}\e[0m |"
+			elif [ "${tareas[$j,prioridad]}" == "Media" ];then
+				echo -n -e "\e[33m ${tareas[$j,prioridad]}\e[0m |"
+			elif [ "${tareas[$j,prioridad]}" == "Baja" ];then
+				echo -n -e "\e[94m ${tareas[$j,prioridad]}\e[0m |"
+			else
+				fcolores 31 ERROR EN LA BASE DE DATOS
+			fi
+
+			echo ""
+			j=$(($j+1))
+		done
+		echo "---------------------------------"
+
+	elif [ $# -gt 0 ] && [ "$1" = "e" ] && [ "$2" = "t" ];then
+
+		j=1
+
+		while [ $j -ne $i ];do
+			if [ "${tareas[$j,estado]}" == "Terminada" ];then
+				echo -n -e "\e[33m[${tareas[$j,id]}]\e[0m |"
+				echo -n " ${tareas[$j,tarea]} |"
+				echo -n -e "\e[32m ${tareas[$j,estado]}\e[0m |"
+
+				if [ "${tareas[$j,prioridad]}" == "Alta" ];then
+					echo -n -e "\e[31m ${tareas[$j,prioridad]}\e[0m |"
+				elif [ "${tareas[$j,prioridad]}" == "Media" ];then
+					echo -n -e "\e[33m ${tareas[$j,prioridad]}\e[0m |"
+				elif [ "${tareas[$j,prioridad]}" == "Baja" ];then
+					echo -n -e "\e[94m ${tareas[$j,prioridad]}\e[0m |"
+				else
+					fcolores 31 ERROR EN LA BASE DE DATOS
+				fi
+
+				echo ""
+
+			elif [ "${tareas[$j,estado]}" == "Por hacer" ];then
+				:
+			else
+				fcolores 31 ERROR EN LA BASE DE DATOS
+			fi
+
+			j=$(($j+1))
+		done
+		echo "---------------------------------"
+
+	elif [ $# -gt 0 ] && [ "$1" = "e" ] && [ "$2" = "n" ];then
+
+		j=1
+
+		while [ $j -ne $i ];do
+			if [ "${tareas[$j,estado]}" == "Por hacer" ];then
+				echo -n -e "\e[33m[${tareas[$j,id]}]\e[0m |"
+				echo -n " ${tareas[$j,tarea]} |"
+				echo -n -e "\e[33m ${tareas[$j,estado]}\e[0m |"
+
+				if [ "${tareas[$j,prioridad]}" == "Alta" ];then
+					echo -n -e "\e[31m ${tareas[$j,prioridad]}\e[0m |"
+				elif [ "${tareas[$j,prioridad]}" == "Media" ];then
+					echo -n -e "\e[33m ${tareas[$j,prioridad]}\e[0m |"
+				elif [ "${tareas[$j,prioridad]}" == "Baja" ];then
+					echo -n -e "\e[94m ${tareas[$j,prioridad]}\e[0m |"
+				else
+					fcolores 31 ERROR EN LA BASE DE DATOS
+				fi
+
+				echo ""
+
+			elif [ "${tareas[$j,estado]}" == "Terminada" ];then
+				:
+			else
+				fcolores 31 ERROR EN LA BASE DE DATOS
+			fi
+
+			j=$(($j+1))
+		done
+		echo "---------------------------------"
+
+	elif [ $# -gt 0 ] && [ "$1" = "p" ] && [ "$2" = "b" ];then
+
+		j=1
+
+		while [ $j -ne $i ];do
+			if [ "${tareas[$j,prioridad]}" == "Baja" ];then
+
+				echo -n -e "\e[33m[${tareas[$j,id]}]\e[0m |"
+				echo -n " ${tareas[$j,tarea]} |"
+
+				if [ "${tareas[$j,estado]}" == "Terminada" ];then
+					echo -n -e "\e[32m ${tareas[$j,estado]}\e[0m |"
+				elif [ "${tareas[$j,estado]}" == "Por hacer" ];then
+					echo -n -e "\e[33m ${tareas[$j,estado]}\e[0m |"
+				else
+					fcolores 31 ERROR EN LA BASE DE DATOS
+				fi
+
+				echo -n -e "\e[94m ${tareas[$j,prioridad]}\e[0m |"
+				echo ""
+
+			elif [ "${tareas[$j,prioridad]}" == "Alta" ];then
+				:
+			elif [ "${tareas[$j,prioridad]}" == "Media" ];then
+				:
+			else
+				fcolores 31 ERROR EN LA BASE DE DATOS
+			fi
+
+			j=$(($j+1))
+		done
+		echo "---------------------------------"
+
+	elif [ $# -gt 0 ] && [ "$1" = "p" ] && [ "$2" = "m" ];then
+
+		j=1
+
+		while [ $j -ne $i ];do
+			if [ "${tareas[$j,prioridad]}" == "Media" ];then
+
+				echo -n -e "\e[33m[${tareas[$j,id]}]\e[0m |"
+				echo -n " ${tareas[$j,tarea]} |"
+
+				if [ "${tareas[$j,estado]}" == "Terminada" ];then
+					echo -n -e "\e[32m ${tareas[$j,estado]}\e[0m |"
+				elif [ "${tareas[$j,estado]}" == "Por hacer" ];then
+					echo -n -e "\e[33m ${tareas[$j,estado]}\e[0m |"
+				else
+					fcolores 31 ERROR EN LA BASE DE DATOS
+				fi
+
+				echo -n -e "\e[33m ${tareas[$j,prioridad]}\e[0m |"
+				echo ""
+
+			elif [ "${tareas[$j,prioridad]}" == "Alta" ];then
+				:
+			elif [ "${tareas[$j,prioridad]}" == "Baja" ];then
+				:
+			else
+				fcolores 31 ERROR EN LA BASE DE DATOS
+			fi
+
+			j=$(($j+1))
+		done
+		echo "---------------------------------"
+
+	elif [ $# -gt 0 ] && [ "$1" = "p" ] && [ "$2" = "a" ];then
+
+		j=1
+
+		while [ $j -ne $i ];do
+			if [ "${tareas[$j,prioridad]}" == "Alta" ];then
+
+				echo -n -e "\e[33m[${tareas[$j,id]}]\e[0m |"
+				echo -n " ${tareas[$j,tarea]} |"
+
+				if [ "${tareas[$j,estado]}" == "Terminada" ];then
+					echo -n -e "\e[32m ${tareas[$j,estado]}\e[0m |"
+				elif [ "${tareas[$j,estado]}" == "Por hacer" ];then
+					echo -n -e "\e[33m ${tareas[$j,estado]}\e[0m |"
+				else
+					fcolores 31 ERROR EN LA BASE DE DATOS
+				fi
+
+				echo -n -e "\e[31m ${tareas[$j,prioridad]}\e[0m |"
+				echo ""
+
+			elif [ "${tareas[$j,prioridad]}" == "Baja" ];then
+				:
+			elif [ "${tareas[$j,prioridad]}" == "Media" ];then
+				:
+			else
+				fcolores 31 ERROR EN LA BASE DE DATOS
+			fi
+
+			j=$(($j+1))
+		done
+		echo "---------------------------------"
+
+	fi
 }
 
 function fadd() {
