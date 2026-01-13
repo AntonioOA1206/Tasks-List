@@ -11,7 +11,7 @@ Para que todo funcione correctamente, necesitas:
 * Una terminal que soporte colores.
 * El comando `fdfind` instalado.
 * Prefriblemente tener todos los archivos del proyecto en la **misma carpeta**.
-* Prefriblemente evitar tener otros ficheros en tu sistema con los mismos nombres (`task.sh`, `task.db`, `functions.sh`, `funciones.sh`).
+* Prefriblemente evitar tener otros ficheros en tu sistema con los mismos nombres (`task.sh`, `task.db`, `funciones_principales.sh`, `funciones_auxiliares.sh`).
 
 ---
 
@@ -25,12 +25,12 @@ git clone <URL_DEL_REPOSITORIO>
 
 O descargando el ZIP y descomprimiéndolo en tu máquina Linux.
 
-Una vez descargado, asegúrate de que `task.sh`, `funtions.sh` y `funciones.sh` tiene permisos de ejecución:
+Una vez descargado, asegúrate de que `task.sh`, `funciones_principales.sh` y `funciones_axiliares.sh` tiene permisos de ejecución:
 
 ```bash
 chmod +x task.sh
-chmod +x funtions.sh
-chmod +x funciones.sh
+chmod +x funciones_principales.sh
+chmod +x funciones_axiliares.sh
 ```
 
 ---
