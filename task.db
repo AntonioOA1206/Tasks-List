@@ -1,4 +1,4 @@
-1:Empezar esto:Por hacer:Baja
-2:Terminar esto:Terminada:Alta
-3:Jugar:Terminada:Media
-4:prueba:Por hacer:Baja
+1:Probar esto:Terminada:Media
+2:Publicar cambios en GitHub:Por hacer:Alta
+3:Comentar aux:Por hacer:Media
+4:Arreglar todo lo que se ha roto:Terminada:Alta

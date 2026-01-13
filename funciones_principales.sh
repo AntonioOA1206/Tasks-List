@@ -1,5 +1,6 @@
 #!/bin/bash
 
+#Lee la BBDD y añade todas las tareas al array "bidimensionales"
 function fleer() {
 
 	while IFS=":" read -r ID task est prio;do
@@ -9,9 +10,11 @@ function fleer() {
 		tareas[$ID,prioridad]=$prio
 		i=$ID
 	done < $db
+	#Deja el indice preparado con uno mas para proximos usos
 	i=$(($i+1))
 }
 
+#Funcion que muestra el menu de ayuda
 function fhelp (
 
 	while true;do
@@ -28,6 +31,7 @@ function fhelp (
 		fcolores 33 "-h Desplegar este menu de ayuda"
 		fcolores 94 -------------------------------
 		echo "Pulsa la tecla q para salir"
+		#Decidir cuando quieres salir del menu
 		read -n 1 -s -p ":" tcl
 		case $tcl in
 			q)
@@ -41,6 +45,7 @@ function fhelp (
 	done
 )
 
+#Funcion que muestra las tareas en formato tabla
 function fver() {
 
 	fleer
@@ -49,14 +54,17 @@ function fver() {
 	echo "ID | Tarea | Estado | Prioridad |"
 	echo "---------------------------------"
 
+	#Si no hay argumentos se ha utilizado la opcion -l sola
 	if [ $# -eq 0 ];then
 
+		#Recorre todo el array mostrando todos los datos de la tarea
 		j=1
 
 		while [ $j -ne $i ];do
 			echo -n -e "\e[33m[${tareas[$j,id]}]\e[0m |"
 			echo -n " ${tareas[$j,tarea]} |"
 
+			#Muestra el color del estado segun el que sea
 			if [ "${tareas[$j,estado]}" == "Terminada" ];then
 				echo -n -e "\e[32m ${tareas[$j,estado]}\e[0m |"
 			elif [ "${tareas[$j,estado]}" == "Por hacer" ];then
@@ -65,6 +73,7 @@ function fver() {
 				fcolores 31 ERROR EN LA BASE DE DATOS
 			fi
 
+			#Muestra el color de la prioridad segun el que sea
 			if [ "${tareas[$j,prioridad]}" == "Alta" ];then
 				echo -n -e "\e[31m ${tareas[$j,prioridad]}\e[0m |"
 			elif [ "${tareas[$j,prioridad]}" == "Media" ];then
@@ -80,11 +89,14 @@ function fver() {
 		done
 		echo "---------------------------------"
 
+	#Si se ha filtrado por el estado "terminada"
 	elif [ $# -gt 0 ] && [ "$1" = "e" ] && [ "$2" = "t" ];then
 
 		j=1
 
 		while [ $j -ne $i ];do
+
+			#Se muestran las tareas con estado "terminada" 
 			if [ "${tareas[$j,estado]}" == "Terminada" ];then
 				echo -n -e "\e[33m[${tareas[$j,id]}]\e[0m |"
 				echo -n " ${tareas[$j,tarea]} |"
@@ -112,10 +124,12 @@ function fver() {
 		done
 		echo "---------------------------------"
 
+	#Si se ha filtrado por el estado "terminada"
 	elif [ $# -gt 0 ] && [ "$1" = "e" ] && [ "$2" = "n" ];then
 
 		j=1
 
+		#Se muestran las tareas con estado "por hacer" 
 		while [ $j -ne $i ];do
 			if [ "${tareas[$j,estado]}" == "Por hacer" ];then
 				echo -n -e "\e[33m[${tareas[$j,id]}]\e[0m |"
@@ -144,10 +158,12 @@ function fver() {
 		done
 		echo "---------------------------------"
 
+	#Si se ha filtrado por la prioridad "baja"
 	elif [ $# -gt 0 ] && [ "$1" = "p" ] && [ "$2" = "b" ];then
 
 		j=1
 
+		#Se muestran las tareas con prioridad "baja" 
 		while [ $j -ne $i ];do
 			if [ "${tareas[$j,prioridad]}" == "Baja" ];then
 
@@ -177,10 +193,12 @@ function fver() {
 		done
 		echo "---------------------------------"
 
+	#Si se ha filtrado por la prioridad "media"
 	elif [ $# -gt 0 ] && [ "$1" = "p" ] && [ "$2" = "m" ];then
 
 		j=1
 
+		#Se muestran las tareas con prioridad "media" 
 		while [ $j -ne $i ];do
 			if [ "${tareas[$j,prioridad]}" == "Media" ];then
 
@@ -210,10 +228,12 @@ function fver() {
 		done
 		echo "---------------------------------"
 
+	#Si se ha filtrado por la prioridad "alta"
 	elif [ $# -gt 0 ] && [ "$1" = "p" ] && [ "$2" = "a" ];then
 
 		j=1
 
+		#Se muestran las tareas con prioridad "alta" 
 		while [ $j -ne $i ];do
 			if [ "${tareas[$j,prioridad]}" == "Alta" ];then
 
@@ -246,12 +266,14 @@ function fver() {
 	fi
 }
 
+#Funcion que añade tareas a la BBDD
 function fadd() {
 
 	fleer
 
 	tareas[$i,id]=$i
 
+	#Introducir la tarea
 	while true;do
 		read -p "Introduce la tarea: " tareas[$i,tarea]
 		if [ -z "${tareas[$i,tarea]}" ];then
@@ -261,6 +283,7 @@ function fadd() {
 		fi
 	done
 
+	#Introducir el estado
 	while true;do
 		read -p "Introduce el estado (t/N): " tareas[$i,estado]
 		case ${tareas[$i,estado]} in
@@ -279,6 +302,7 @@ function fadd() {
 		esac
 	done
 
+	#Introducir la prioridad
 	while true;do
 		read -p "Introduce la prioridad (B/m/a): " tareas[$i,prioridad]
 		case ${tareas[$i,prioridad]} in
@@ -301,17 +325,23 @@ function fadd() {
 		esac
 	done
 
+	#Añadirla a la BBDD
 	echo "${tareas[$i,id]}:${tareas[$i,tarea]}:${tareas[$i,estado]}:${tareas[$i,prioridad]}" >> $db
 }
 
+#Funcion que borra tareas
 function fdel() {
 
+	#Comprueba que el id este formado solo por numeros
 	if [[ $1 =~ [0-9] ]];then
 
 		fleer
 
+		#Si introduces un ID no valido
 		if [ $1 -lt 1 ] || [ $1 -ge $i ];then
 			fcolores 31 ID INVALIDO
+
+		#Limpia la BBDD y vuelca todas las tareas salvo la borrada	
 		else
 			: > $db
 
@@ -331,14 +361,19 @@ function fdel() {
 	fi
 }
 
+#Funcion que cambia el estado
 function festado() {
 
+	#Comprueba que el id este formado solo por numeros
 	if [[ $1 =~ [0-9] ]];then
 
 		fleer
 
+		#Si introduces un ID no valido
 		if [ $1 -lt 1 ] || [ $1 -ge $i ];then
 			fcolores 31 ID INVALIDO
+
+		#Limpia la BBDD y vuelca todas las tareas pero cambiando el tema de la tarea elegida	
 		else
 			: > $db
 
@@ -364,16 +399,20 @@ function festado() {
 	fi
 }
 
+#Funcion que cambia la prioridad
 function fprio() {
 
+	#Comprueba que el id este formado solo por numeros
 	if [[ $1 =~ [0-9] ]];then
 
 		fleer
 
+		#Si introduces un ID no valido
 		if [ $1 -lt 1 ] || [ $1 -ge $i ];then
 			fcolores 31 ID INVALIDO
 		else
 
+			#Pide la nueva prioridad para cambiarla en el array
 			while true;do
 				read -p "Introduce la nueva prioridad prioridad (B/m/a): " prio
 				case $prio in
@@ -395,6 +434,8 @@ function fprio() {
 					;;
 				esac
 			done
+
+			#Limpia la BBDD y vuelca todas las tareas
 
 			: > $db
 
